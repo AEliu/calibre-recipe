@@ -34,6 +34,4 @@ class Lizhi(BasicNewsRecipe):
                 articles.append(article)
         ans = [(self.title, articles)]
         return ans
-
-
     

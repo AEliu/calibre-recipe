@@ -11,6 +11,7 @@ class PeopleOpinion(BasicNewsRecipe):
     beginurl = 'http://opinion.people.com.cn/GB/8213/49160/49219/index.html'
     listurl = 'http://opinion.people.com.cn/GB/8213/49160/49219/index{p}.html'
     language = 'zh'
+    remove_tags_after = [dict(id=['rwb_zw'])]
     
     def parse_index(self):
         pageurls = [self.beginurl]

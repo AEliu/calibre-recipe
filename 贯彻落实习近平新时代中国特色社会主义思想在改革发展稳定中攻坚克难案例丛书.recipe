@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+# vim:fileencoding=utf-8
+from calibre.web.feeds.news import BasicNewsRecipe
+from urllib.request import urlopen
+import re
+
+class AdvancedUserRecipe1602859841(BasicNewsRecipe):
+    title          = '贯彻落实习近平新时代中国特色社会主义思想在改革发展稳定中攻坚克难案例丛书'
+    oldest_article = 2
+    max_articles_per_feed = 100
+    auto_cleanup   = False
+    language = 'zh'
+    cover_url = 'https://img14.360buyimg.com/n1/jfs/t1/40414/21/14318/412467/5d561f9eE7d7c81ff/6e9adee9f4eca76f.jpg'
+    keep_only_tags = [dict(name='div', class_='dangyuanwang160317_ind01')]
+    remove_tags = [dict(name='div', class_='title_bottom')]
+    
+    def parse_index(self):
+        site = 'http://www.12371.cn/g/'
+        
+        soup = self.index_to_soup(site)
+        _ans = []
+        
+        for vol in soup.findAll('div', {'class': 'gjknal_ind02'}):
+            voltitle = vol.span.text
+            articles = []
+            for link in vol.findAll('li'):
+                title = link.a.text
+                url = link.a.get('href')
+                urlsdoc = urlopen(url).read()  # resolve redirect.
+                
+                pattern = re.compile("window.location.href=\s*'([^']+)'")
+                m = re.search(pattern, urlsdoc.decode('utf-8'))
+                if m:
+                    url = m.group(1)
+                article = {'title':title,'url':url}
+                articles.append(article)
+            ans = (voltitle, articles)
+            _ans.append(ans)
+        
+        return _ans
+            
